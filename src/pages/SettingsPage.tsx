@@ -677,6 +677,7 @@ export default function SettingsPage() {
                                   >
                                     <UserMinus className="w-3.5 h-3.5" />
                                   </Button>
+                                  </div>
                                 </div>
                               );
                             })}
