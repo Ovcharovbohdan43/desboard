@@ -1,0 +1,9 @@
+project_id = "aqgwigjzvpcjzaymfnbw"
+
+# Edge Function send-invite-email: auth is checked inside the function via auth.getUser()
+[functions.send-invite-email]
+verify_jwt = false
+
+# Edge Function unsubscribe-email: public, called from /unsubscribe page with signed token
+[functions.unsubscribe-email]
+verify_jwt = false

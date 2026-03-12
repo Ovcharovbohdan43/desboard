@@ -1,0 +1,5 @@
+# Project conventions
+
+## Language
+- The application UI and all user-facing text MUST be in English only.
+- No Russian or other languages in the interface, labels, messages, or documentation visible to end users.
