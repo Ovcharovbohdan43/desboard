@@ -63,7 +63,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             collapsed={sidebarCollapsed}
             onCollapsedChange={setSidebarCollapsed}
           />
-          <main className="flex-1 min-w-0 min-h-0 flex flex-col pt-14 pr-14 lg:pt-0 lg:pr-0">
+          <main className="flex-1 min-w-0 min-h-0 flex flex-col pt-14 px-14 lg:pt-0 lg:px-0">
             <TeamGuard>{children}</TeamGuard>
           </main>
         </div>
