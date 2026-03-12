@@ -143,12 +143,12 @@ const Sidebar = ({ activeNav, onNavChange, collapsed, onCollapsedChange }: Sideb
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="fixed z-[100] lg:hidden p-1 rounded-full ring-2 ring-background shadow-lg focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer touch-manipulation select-none top-[calc(1rem+env(safe-area-inset-top,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))]"
+          className="fixed z-[100] lg:hidden p-0.5 rounded-full border border-border/40 shadow-md focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer touch-manipulation select-none top-[calc(1rem+env(safe-area-inset-top,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))]"
           aria-label="Account menu"
         >
-          <Avatar className="w-10 h-10 pointer-events-none">
+          <Avatar className="w-8 h-8 pointer-events-none">
             <AvatarImage src={profile?.avatar_url ?? undefined} alt="" />
-            <AvatarFallback className="text-sm font-semibold">{initials}</AvatarFallback>
+            <AvatarFallback className="text-xs font-semibold">{initials}</AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>
@@ -223,7 +223,7 @@ const Sidebar = ({ activeNav, onNavChange, collapsed, onCollapsedChange }: Sideb
               <button className="mx-3 mb-4 w-[calc(100%-24px)] p-2.5 rounded-xl bg-muted/40 flex items-center gap-2.5 hover:bg-muted/60 transition-colors text-left">
                 <Avatar className="w-9 h-9 shrink-0">
                   <AvatarImage src={profile?.avatar_url ?? undefined} alt="" />
-                  <AvatarFallback className="text-xs font-semibold">{initials}</AvatarFallback>
+                  <AvatarFallback className="text-sm font-semibold">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
@@ -235,7 +235,7 @@ const Sidebar = ({ activeNav, onNavChange, collapsed, onCollapsedChange }: Sideb
               <button className="flex justify-center mb-4 w-full py-2 hover:bg-muted/40 rounded-xl transition-colors">
                 <Avatar className="w-9 h-9">
                   <AvatarImage src={profile?.avatar_url ?? undefined} alt="" />
-                  <AvatarFallback className="text-xs font-semibold">{initials}</AvatarFallback>
+                  <AvatarFallback className="text-sm font-semibold">{initials}</AvatarFallback>
                 </Avatar>
               </button>
             )}
