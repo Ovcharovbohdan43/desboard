@@ -4,7 +4,7 @@ import {
   ChevronRight, ChevronDown, Folder, MoreHorizontal, Grid3X3, List,
   Upload, Filter, X, File, Music, Archive, HardDrive, Star,
   Download, Trash2, Copy, Move, Eye, Edit2, Clock, ArrowUpDown, ExternalLink,
-  CheckCircle2, Circle, Bookmark, Palette, FolderTree, Link2,
+  CheckCircle2, Circle, Bookmark, Palette, FolderTree, Link2, Loader2,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Badge } from "@/components/ui/badge";
@@ -1795,7 +1795,12 @@ export const FilesExpandedBackend = () => {
   }
 
   if (foldersLoading) {
-    return <div className="p-8 animate-pulse bg-muted/30 rounded-xl h-48" />;
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-16">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        <span className="text-sm text-muted-foreground">Loading files…</span>
+      </div>
+    );
   }
 
   return (
@@ -2143,7 +2148,10 @@ export const FilesExpandedBackend = () => {
         <div className="flex gap-4 flex-1 min-h-0">
           <ScrollArea className="flex-1">
             {filesLoading ? (
-              <div className="flex-1 animate-pulse bg-muted/20 rounded-xl min-h-[120px]" />
+              <div className="flex flex-col items-center justify-center gap-3 py-16">
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <span className="text-sm text-muted-foreground">Loading files…</span>
+              </div>
             ) : filteredAndSortedFiles.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-2">
                 <FolderOpen className="w-10 h-10 opacity-30" />

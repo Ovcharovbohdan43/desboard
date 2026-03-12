@@ -9,7 +9,7 @@ import { mapProject } from "@/lib/projectMapper";
 import {
   Plus, Search, Filter, LayoutGrid, List, Calendar, MoreHorizontal,
   ChevronDown, ChevronRight, Clock, Users, CheckCircle2, Circle,
-  AlertCircle, ArrowUpRight, Trash2, Edit3, X, GripVertical,
+  AlertCircle, ArrowUpRight, Trash2, Edit3, X, GripVertical, Loader2,
   Target, Tag, Paperclip, MessageSquare, FolderKanban,
   Upload, FileText, Image, Film, Music, Archive, File, Palette,
   Link2, HardDrive, Eye, Download, Star, ListTodo,
@@ -254,7 +254,12 @@ export const ProjectsPreview = ({ pixelSize }: { pixelSize?: { width: number; he
   const totalTasks = previewProjects.reduce((s, p) => s + p.tasks.length, 0);
   const doneTasks = previewProjects.reduce((s, p) => s + p.tasks.filter(t => t.status === "done").length, 0);
 
-  if (isLoading) return <div className="animate-pulse h-full bg-muted/30 rounded-lg" />;
+  if (isLoading) return (
+    <div className="flex flex-col items-center justify-center gap-2 h-full py-8">
+      <Loader2 className="w-6 h-6 text-primary animate-spin" />
+      <span className="text-[10px] text-muted-foreground">Loading…</span>
+    </div>
+  );
   if (tier === "compact") {
     return (
       <div className="flex flex-col h-full justify-center gap-1">
@@ -910,7 +915,12 @@ export const ProjectsExpanded = () => {
 
   const selectedProject = projects.find(p => p.id === selectedId);
 
-  if (isLoading) return <div className="animate-pulse h-48 bg-muted/30 rounded-xl" />;
+  if (isLoading) return (
+    <div className="flex flex-col items-center justify-center gap-3 py-16">
+      <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      <span className="text-sm text-muted-foreground">Loading projects…</span>
+    </div>
+  );
   if (selectedProject) {
     return (
       <ProjectDetail

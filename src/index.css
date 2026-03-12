@@ -202,6 +202,35 @@
     background: hsl(var(--muted-foreground) / 0.7);
   }
 
+  /* Sidebar scrollbar — фирменный стиль (primary/orange accent) */
+  .sidebar-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--sidebar-primary) / 0.8) hsl(var(--sidebar-border) / 0.6);
+    -webkit-overflow-scrolling: touch;
+  }
+  .sidebar-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .sidebar-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--sidebar-border) / 0.5);
+    border-radius: 9999px;
+    margin: 4px 2px;
+  }
+  .sidebar-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--sidebar-primary) / 0.7);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  .sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--sidebar-primary) / 0.9);
+    background-clip: padding-box;
+  }
+  .sidebar-scrollbar::-webkit-scrollbar-thumb:active {
+    background: hsl(var(--sidebar-primary));
+    background-clip: padding-box;
+  }
+
   /* Dark theme: white/light text in widget cards uses brand color */
   .dark [data-widget-content] {
     color: var(--brand-primary);
@@ -218,5 +247,11 @@
     border-radius: 1.5rem;
     box-shadow: 0 0 0 1px hsl(var(--container-border)),
                 0 4px 24px -4px hsl(30 10% 30% / 0.08);
+  }
+
+  @media (max-width: 1023px) {
+    .dashboard-container {
+      border-radius: 0;
+    }
   }
 }

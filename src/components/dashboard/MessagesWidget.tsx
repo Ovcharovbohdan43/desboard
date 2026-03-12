@@ -12,6 +12,7 @@ import {
   Settings2,
   UserMinus,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -590,7 +591,10 @@ export const MessagesExpanded = () => {
 
       <div className="space-y-1">
         {chatsLoading ? (
-          <div className="py-8 text-center text-sm text-muted-foreground">Loading…</div>
+          <div className="flex flex-col items-center justify-center gap-3 py-8">
+            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+            <span className="text-sm text-muted-foreground">Loading chats…</span>
+          </div>
         ) : filteredChats.length === 0 ? (
           <div className="py-8 text-center text-sm text-muted-foreground">
             {search ? "No chats match your search." : "No chats yet. Start a direct chat or create a channel!"}

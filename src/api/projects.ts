@@ -50,7 +50,13 @@ export async function createProject(insert: ProjectInsert) {
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    // 23505 = unique_violation (duplicate name/slug)
+    if (error.code === "23505") {
+      throw new Error("Проект с таким именем уже существует. Выберите другое имя.");
+    }
+    throw error;
+  }
   return data as Project;
 }
 
@@ -62,7 +68,12 @@ export async function updateProject(id: string, update: ProjectUpdate) {
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    if (error.code === "23505") {
+      throw new Error("Проект с таким именем уже существует. Выберите другое имя.");
+    }
+    throw error;
+  }
   return data as Project;
 }
 

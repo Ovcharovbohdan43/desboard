@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Check, Circle, Clock, Trash2, ListTodo, MessageSquare } from "lucide-react";
+import { Plus, Check, Circle, Clock, Trash2, ListTodo, MessageSquare, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -52,7 +52,12 @@ export const TasksPreview = ({ pixelSize }: { pixelSize?: { width: number; heigh
       </div>
     );
   }
-  if (isLoading) return <div className="animate-pulse h-full bg-muted/30 rounded-lg" />;
+  if (isLoading) return (
+    <div className="flex flex-col items-center justify-center gap-2 h-full py-8">
+      <Loader2 className="w-6 h-6 text-primary animate-spin" />
+      <span className="text-[10px] text-muted-foreground">Loading…</span>
+    </div>
+  );
 
   if (tier === "standard") {
     const hasPending = pending.length > 0;
@@ -169,7 +174,12 @@ export const TasksExpanded = () => {
     );
   };
 
-  if (isLoading) return <div className="animate-pulse h-48 bg-muted/30 rounded-xl" />;
+  if (isLoading) return (
+    <div className="flex flex-col items-center justify-center gap-3 py-16">
+      <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      <span className="text-sm text-muted-foreground">Loading tasks…</span>
+    </div>
+  );
 
   const filtered = tasks.filter((t) => {
     if (filter === "pending") return !t.completed;

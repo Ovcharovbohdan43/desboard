@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { PageLoader } from "@/components/ui/page-loader";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -13,7 +14,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <PageLoader message="Loading…" />
       </div>
     );
   }

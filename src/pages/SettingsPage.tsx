@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Users, Sliders, Camera, Loader2, UserPlus, UserMinus, Copy, Moon, Sun, Monitor, Palette, Shield, Zap, Mail } from "lucide-react";
+import { User, Users, Sliders, Camera, Loader2, UserPlus, UserMinus, Copy, Moon, Sun, Monitor, Palette, Shield, Zap, Mail, LogOut } from "lucide-react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useTeamContext } from "@/contexts/TeamContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
@@ -67,7 +67,8 @@ export default function SettingsPage() {
     const t = searchParams.get("tab");
     return t === "team" || t === "preferences" || t === "profile" ? t : "profile";
   });
-  const { user } = useAuthContext();
+  const { user, signOut } = useAuthContext();
+  const navigate = useNavigate();
   const { teamId } = useTeamContext();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const updateProfile = useUpdateProfile();
@@ -367,6 +368,20 @@ export default function SettingsPage() {
                       </Button>
                     </>
                   )}
+
+                  <div className="pt-6 mt-6 border-t border-border/50">
+                    <Button
+                      variant="outline"
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={async () => {
+                        await signOut();
+                        navigate("/login", { replace: true });
+                      }}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign out
+                    </Button>
+                  </div>
                 </div>
               </motion.div>
             )}

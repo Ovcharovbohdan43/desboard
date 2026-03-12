@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import {
   Home, FolderKanban, CalendarDays, Users, DollarSign,
@@ -137,17 +138,54 @@ const Sidebar = ({ activeNav, onNavChange, collapsed, onCollapsedChange }: Sideb
     );
   };
 
+  const mobileAvatar = (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className="fixed z-[100] lg:hidden p-1 rounded-full ring-2 ring-background shadow-lg focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer touch-manipulation select-none top-[calc(1rem+env(safe-area-inset-top,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))]"
+          aria-label="Account menu"
+        >
+          <Avatar className="w-10 h-10 pointer-events-none">
+            <AvatarImage src={profile?.avatar_url ?? undefined} alt="" />
+            <AvatarFallback className="text-sm font-semibold">{initials}</AvatarFallback>
+          </Avatar>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-56 rounded-xl">
+        <DropdownMenuItem disabled className="opacity-100">
+          <div className="flex flex-col">
+            <span className="font-medium">{displayName}</span>
+            <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => onNavChange("settings")}>
+          <Settings className="w-4 h-4 mr-2" />
+          Settings
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive cursor-pointer">
+          <LogOut className="w-4 h-4 mr-2" />
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
     <>
+      {typeof document !== "undefined" && createPortal(mobileAvatar, document.body)}
+
       {/* Sidebar — desktop */}
       <aside
         className={cn(
-          "hidden lg:flex flex-col py-5 border-r border-border/50 transition-all duration-300 shrink-0 relative bg-card min-w-0 overflow-x-hidden",
+          "hidden lg:flex flex-col h-full min-h-0 py-5 border-r border-border/50 transition-all duration-300 shrink-0 relative bg-card min-w-0 overflow-x-hidden",
           collapsed ? "w-[60px]" : "w-[230px]"
         )}
       >
         {/* Header: Logo + Collapse */}
-        <div className={cn("flex items-center mb-5", collapsed ? "justify-center px-2" : "justify-between px-4")}>
+        <div className={cn("flex items-center mb-5 shrink-0", collapsed ? "justify-center px-2" : "justify-between px-4")}>
           {!collapsed ? (
             teamSettings?.logo_url ? (
               <img src={teamSettings.logo_url} alt="Logo" className="h-6 object-contain max-w-[140px]" />
@@ -171,6 +209,8 @@ const Sidebar = ({ activeNav, onNavChange, collapsed, onCollapsedChange }: Sideb
           )}
         </div>
 
+        {/* Scrollable content — фирменный скроллбар */}
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden sidebar-scrollbar pr-1 -mr-1">
         {/* Team selector + Create team */}
         <div className="min-w-0 flex flex-col">
           <TeamSelector collapsed={collapsed} />
@@ -231,14 +271,15 @@ const Sidebar = ({ activeNav, onNavChange, collapsed, onCollapsedChange }: Sideb
         </div>
 
         {/* Secondary nav */}
-        <nav className={cn("flex flex-col gap-0.5 w-full flex-1", collapsed ? "items-center px-2" : "px-3")}>
+        <nav className={cn("flex flex-col gap-0.5 w-full", collapsed ? "items-center px-2" : "px-3")}>
           {secondaryNavItems.map((item) => (
             <NavItem key={item.id} item={item} />
           ))}
         </nav>
+        </div>
 
         {/* Bottom section */}
-        <div className={cn("mt-auto flex flex-col gap-0.5", collapsed ? "px-2 items-center" : "px-3")}>
+        <div className={cn("mt-auto flex flex-col gap-0.5 shrink-0", collapsed ? "px-2 items-center" : "px-3")}>
           <div className={cn("mb-2", collapsed ? "mx-1" : "mx-0")}>
             <div className="h-px bg-border/40" />
           </div>

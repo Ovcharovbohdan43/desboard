@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useTeams } from "@/hooks/useTeams";
 import { useTeamContext } from "@/contexts/TeamContext";
 import { Button } from "@/components/ui/button";
+import { PageLoader } from "@/components/ui/page-loader";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -27,7 +28,7 @@ export function TeamGuard({ children }: TeamGuardProps) {
   if (isLoading || (teams && teams.length > 0 && !teamId)) {
     return (
       <div className="min-h-[200px] flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <PageLoader message="Loading teams…" />
       </div>
     );
   }

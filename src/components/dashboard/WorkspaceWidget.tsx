@@ -4,7 +4,7 @@ import {
   Users, Briefcase, FolderKanban, ListTodo, FileText, Clock,
   AlertTriangle, MessageSquare, CheckCircle2, Upload, Eye,
   HardDrive, Shield, LayoutTemplate, Settings, ChevronRight,
-  CalendarDays, Activity, MoreVertical, Pencil, Trash2, CopyPlus, Plus,
+  CalendarDays, Activity, MoreVertical, Pencil, Trash2, CopyPlus, Plus, Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getMemberDisplayName } from "@/api/teams";
@@ -51,7 +51,7 @@ import { useTeamMembers } from "@/hooks/useTeamMembers";
 import { useClients } from "@/hooks/useClients";
 import { useDeliverablesByTeam } from "@/hooks/useDeliverables";
 import { useFiles } from "@/hooks/useFiles";
-import { useTeams } from "@/hooks/useTeams";
+import { useTeams, useTeam } from "@/hooks/useTeams";
 import { useAutomationRules } from "@/hooks/useAutomationRules";
 import { useProjectTemplates, useCreateProjectTemplate, useUpdateProjectTemplate, useDeleteProjectTemplate } from "@/hooks/useProjectTemplates";
 import { useCreateProject } from "@/hooks/useProjects";
@@ -198,6 +198,7 @@ export const WorkspaceExpanded = () => {
   const { data: deliverablesList = [], isLoading: deliverablesLoading } = useDeliverablesByTeam(teamId);
   const { data: filesList = [] } = useFiles(null, teamId);
   const { data: teamsList = [] } = useTeams();
+  const { data: currentTeam } = useTeam(teamId);
   const { data: automationRulesList = [] } = useAutomationRules(teamId);
   const { data: templatesList = [], isLoading: templatesLoading } = useProjectTemplates(teamId);
   const createTemplateMutation = useCreateProjectTemplate(teamId);
@@ -289,7 +290,7 @@ export const WorkspaceExpanded = () => {
     }
     return m;
   }, [projectsData]);
-  const currentTeamName = teamsList.find((t) => t.id === teamId)?.name ?? "Workspace";
+  const currentTeamName = currentTeam?.name ?? teamsList.find((t) => t.id === teamId)?.name ?? "Workspace";
   const storageUsedBytes = useMemo(() => (filesList as FileRecord[]).reduce((s, f) => s + (f.size_bytes ?? 0), 0), [filesList]);
   const storageTotalGb = 50;
   const storageUsedGb = (storageUsedBytes / (1024 ** 3)).toFixed(1);
@@ -348,7 +349,10 @@ export const WorkspaceExpanded = () => {
           {!teamId ? (
             <p className="text-sm text-muted-foreground">Select a team to see the workspace overview.</p>
           ) : overviewLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-16">
+              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+              <span className="text-sm text-muted-foreground">Loading workspace…</span>
+            </div>
           ) : (
             <>
           {/* KPI strip */}
@@ -573,7 +577,7 @@ export const WorkspaceExpanded = () => {
           {!teamId ? (
             <p className="text-sm text-muted-foreground">Select a team.</p>
           ) : projectsLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /><span className="text-sm text-muted-foreground">Loading projects…</span></div>
           ) : activeProjects.length === 0 ? (
             <p className="text-sm text-muted-foreground">No active projects.</p>
           ) : (
@@ -614,7 +618,7 @@ export const WorkspaceExpanded = () => {
           {!teamId ? (
             <p className="text-sm text-muted-foreground">Select a team.</p>
           ) : projectsLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /><span className="text-sm text-muted-foreground">Loading tasks…</span></div>
           ) : (
             uiProjects.flatMap((p) =>
               p.tasks.map((t) => (
@@ -639,7 +643,7 @@ export const WorkspaceExpanded = () => {
           {!teamId ? (
             <p className="text-sm text-muted-foreground">Select a team.</p>
           ) : deliverablesLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /><span className="text-sm text-muted-foreground">Loading deliverables…</span></div>
           ) : deliverablesList.length === 0 ? (
             <p className="text-sm text-muted-foreground">No deliverables yet.</p>
           ) : (
@@ -699,7 +703,7 @@ export const WorkspaceExpanded = () => {
           {!teamId ? (
             <p className="text-sm text-muted-foreground">Select a team.</p>
           ) : membersLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /><span className="text-sm text-muted-foreground">Loading team members…</span></div>
           ) : members.length === 0 ? (
             <p className="text-sm text-muted-foreground">No team members yet.</p>
           ) : (
@@ -742,7 +746,7 @@ export const WorkspaceExpanded = () => {
           {!teamId ? (
             <p className="text-sm text-muted-foreground">Select a team.</p>
           ) : templatesLoading ? (
-            <p className="text-sm text-muted-foreground">Loading…</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /><span className="text-sm text-muted-foreground">Loading templates…</span></div>
           ) : (
             <>
               <div className="flex items-center justify-between gap-2">

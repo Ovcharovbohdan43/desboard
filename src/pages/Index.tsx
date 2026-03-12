@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
 
 import NotificationBar from "@/components/dashboard/NotificationBar";
 import WidgetCard from "@/components/dashboard/WidgetCard";
@@ -164,7 +165,8 @@ const Index = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { user, signOut } = useAuthContext();
-  const displayName = user?.user_metadata?.display_name || user?.email?.split("@")[0] || "User";
+  const { data: profile } = useProfile();
+  const displayName = profile?.display_name || user?.user_metadata?.display_name || user?.email?.split("@")[0] || "User";
   const initials = displayName.slice(0, 2).toUpperCase();
 
   const handleSignOut = async () => {
@@ -320,20 +322,24 @@ const Index = () => {
                   transition={{ duration: 0.3, delay: i * 0.03 }}
                   onClick={() => handleExpand(id)}
                   className={cn(
-                    "rounded-2xl bg-card border border-border/30 overflow-hidden active:scale-[0.97] transition-transform",
-                    isWidgetEnabled(id) ? "cursor-pointer" : "cursor-not-allowed opacity-60 pointer-events-none"
+                    "rounded-2xl bg-card border border-border/30 overflow-hidden transition-all duration-200 ease-out relative",
+                    "active:scale-[0.97]",
+                    isWidgetEnabled(id) ? "cursor-pointer hover:scale-[1.02] hover:shadow-lg hover:border-border/50" : "cursor-not-allowed pointer-events-none"
                   )}>
                     <div className={cn("flex flex-col relative", isFirst ? "min-h-[160px]" : "min-h-[140px]")}>
                       {!isWidgetEnabled(id) && (
-                        <div className="absolute top-2 right-2 z-10 rounded-md bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                          Coming soon
-                        </div>
+                        <>
+                          <div className="absolute inset-0 rounded-2xl bg-black/25 dark:bg-black/45 z-[5] pointer-events-none" aria-hidden />
+                          <div className="absolute top-2 right-2 z-10 rounded-md bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                            Coming soon
+                          </div>
+                        </>
                       )}
                       {/* Card header */}
                       <div className="flex items-center justify-between px-4 pt-3 pb-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground">{widget.icon}</span>
-                          <h3 className="text-xs font-semibold text-foreground uppercase tracking-wide">{widget.title}</h3>
+                          <span className="opacity-80" style={{ color: "var(--brand-primary)" }}>{widget.icon}</span>
+                          <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--brand-primary)" }}>{widget.title}</h3>
                         </div>
                         <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/50" />
                       </div>

@@ -270,7 +270,7 @@ function ManageTeamDialog({
         {isLoading ? (
           <div className="animate-pulse h-24 bg-muted/30 rounded-xl" />
         ) : (
-          <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1 sidebar-scrollbar">
             {canInvite && (
               <div className="space-y-2 pb-2 border-b border-border/30">
                 {!showInviteForm ? (
@@ -402,7 +402,6 @@ function ManageTeamDialog({
                     className="h-8 w-8 rounded-lg text-destructive hover:text-destructive"
                     onClick={() => setRemoveId(m.id)}
                     disabled={!canManage || (isSelf && members.filter((x) => x.role === "owner").length <= 1)}
-                    title={isSelf ? "Leave team" : "Remove member"}
                     title={isSelf ? "Leave team" : "Remove member"}
                   >
                     <UserMinus className="w-3.5 h-3.5" />

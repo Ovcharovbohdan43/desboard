@@ -103,17 +103,21 @@ const WidgetCard = ({ id, title, icon, accentColor, size = "small", tintIndex, e
       }}
       style={wrapperStyle}
       className={cn(
-        "relative group transition-all duration-200",
+        "relative group transition-all duration-200 ease-out",
         !pixelSize && "h-[140px]",
         isDragging && "shadow-lg",
         isResizing && "ring-2 ring-foreground/10",
-        !enabled && "opacity-60"
+        !enabled && "opacity-75",
+        enabled && "hover:shadow-[0_12px_40px_-8px_hsl(var(--foreground)/0.15)]"
       )}
     >
       {!enabled && (
-        <div className="absolute top-2 right-2 z-20 rounded-md bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-          Coming soon
-        </div>
+        <>
+          <div className="absolute inset-0 top-1 rounded-2xl bg-black/25 dark:bg-black/45 z-[5] pointer-events-none" aria-hidden />
+          <div className="absolute top-2 right-2 z-20 rounded-md bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+            Coming soon
+          </div>
+        </>
       )}
       {/* Back tab — light neutral */}
       <div
@@ -125,15 +129,16 @@ const WidgetCard = ({ id, title, icon, accentColor, size = "small", tintIndex, e
           className="absolute -top-3 left-4 h-5 rounded-t-xl flex items-center px-2.5 gap-1"
           style={{ background: "#d1d5db" }}
         >
-          <span className="text-[8px] font-bold text-foreground/50 uppercase tracking-widest">{title}</span>
+          <span className="text-[8px] font-bold uppercase tracking-widest" style={{ color: "var(--brand-primary)" }}>{title}</span>
         </div>
       </div>
 
       {/* Front panel — solid white with accent tint when expanded */}
       <div
         className={cn(
-          "absolute inset-0 top-1 rounded-2xl flex flex-col overflow-hidden",
+          "absolute inset-0 top-1 rounded-2xl flex flex-col overflow-hidden transition-all duration-200",
           "border border-border/30 dark:border-border/20",
+          enabled && "group-hover:border-border/50 group-hover:shadow-md",
           !enabled && "pointer-events-none cursor-not-allowed"
         )}
         style={{

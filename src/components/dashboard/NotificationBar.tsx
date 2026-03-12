@@ -1,16 +1,20 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CalendarDays, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { INITIAL_EVENTS } from "@/components/dashboard/CalendarWidget";
+import { useTeamContext } from "@/contexts/TeamContext";
+import { useProjects } from "@/hooks/useProjects";
 import { useIsMobile } from "@/hooks/use-mobile";
+import type { CalendarEvent } from "@/components/dashboard/CalendarWidget";
 
-function getDateStr(day: number) {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+const COLORS = ["hsl(150 50% 40%)", "hsl(200 70% 50%)", "hsl(280 50% 50%)", "hsl(35 80% 50%)"];
+
+function getDateStr(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function formatTime(time: string) {
+  if (!time || time === "all") return "All day";
   const [h, m] = time.split(":").map(Number);
   const ampm = h >= 12 ? "PM" : "AM";
   const hour = h % 12 || 12;
@@ -20,10 +24,45 @@ function formatTime(time: string) {
 const NotificationBar = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { teamId } = useTeamContext();
+  const { data: projects = [] } = useProjects(teamId);
   const [dismissed, setDismissed] = useState(false);
 
-  const todayStr = getDateStr(new Date().getDate());
-  const todayEvents = INITIAL_EVENTS.filter((e) => e.date === todayStr);
+  const todayStr = getDateStr(new Date());
+  const todayEvents = useMemo((): CalendarEvent[] => {
+    const events: CalendarEvent[] = [];
+    let i = 0;
+    for (const p of projects) {
+      const proj = p as { tasks?: { id: string; title: string; due_date: string | null }[]; milestones?: { id: string; title: string; due_date: string | null }[] };
+      for (const t of proj.tasks ?? []) {
+        if (t.due_date === todayStr) {
+          events.push({
+            id: `task-${t.id}`,
+            title: t.title,
+            date: todayStr,
+            time: "09:00",
+            duration: 0,
+            color: COLORS[i % COLORS.length],
+          });
+          i++;
+        }
+      }
+      for (const m of proj.milestones ?? []) {
+        if (m.due_date === todayStr) {
+          events.push({
+            id: `milestone-${m.id}`,
+            title: m.title,
+            date: todayStr,
+            time: "all",
+            duration: 0,
+            color: COLORS[i % COLORS.length],
+          });
+          i++;
+        }
+      }
+    }
+    return events;
+  }, [projects, todayStr]);
 
   if (todayEvents.length === 0 || dismissed) return null;
 
