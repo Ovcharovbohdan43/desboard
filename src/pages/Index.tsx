@@ -218,7 +218,12 @@ const Index = () => {
   };
 
   return (
-    <div className={cn("p-3 md:p-8 lg:p-10", isMobile && "pt-4")}>
+    <div
+      className={cn(
+        "p-3 md:p-8 lg:p-10 overscroll-contain",
+        isMobile && "px-3 pt-2 pb-0"
+      )}
+    >
       {/* Notification bar - visible when there are today's events */}
       <NotificationBar />
 
@@ -309,7 +314,12 @@ const Index = () => {
             </DndContext> : (
 
           /* Mobile: Cards with preview content */
-          <div className="grid grid-cols-2 gap-3 pb-24">
+          <div
+            className="grid grid-cols-2 gap-2 sm:gap-3"
+            style={{
+              paddingBottom: isMobile ? "calc(5.5rem + env(safe-area-inset-bottom, 0px))" : undefined,
+            }}
+          >
               {activeWidgets.filter(id => WIDGETS[id]).map((id, i) => {
               const widget = WIDGETS[id];
               const Preview = widget.preview;
@@ -322,11 +332,17 @@ const Index = () => {
                   transition={{ duration: 0.3, delay: i * 0.03 }}
                   onClick={() => handleExpand(id)}
                   className={cn(
-                    "rounded-2xl bg-card border border-border/30 overflow-hidden transition-all duration-200 ease-out relative",
+                    "rounded-2xl bg-card border border-border/30 overflow-hidden transition-all duration-200 ease-out relative touch-manipulation",
                     "active:scale-[0.97]",
                     isWidgetEnabled(id) ? "cursor-pointer hover:scale-[1.02] hover:shadow-lg hover:border-border/50" : "cursor-not-allowed pointer-events-none"
-                  )}>
-                    <div className={cn("flex flex-col relative", isFirst ? "min-h-[160px]" : "min-h-[140px]")}>
+                  )}
+                >
+                    <div
+                      className={cn(
+                        "flex flex-col relative",
+                        isFirst ? "min-h-[150px] sm:min-h-[160px]" : "min-h-[130px] sm:min-h-[140px]"
+                      )}
+                    >
                       {!isWidgetEnabled(id) && (
                         <>
                           <div className="absolute inset-0 rounded-2xl bg-black/25 dark:bg-black/45 z-[5] pointer-events-none" aria-hidden />
@@ -336,15 +352,15 @@ const Index = () => {
                         </>
                       )}
                       {/* Card header */}
-                      <div className="flex items-center justify-between px-4 pt-3 pb-1">
-                        <div className="flex items-center gap-2">
-                          <span className="opacity-80" style={{ color: "var(--brand-primary)" }}>{widget.icon}</span>
-                          <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--brand-primary)" }}>{widget.title}</h3>
+                      <div className="flex items-center justify-between px-3 sm:px-4 pt-3 pb-1 min-h-[44px]">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className="opacity-80 shrink-0" style={{ color: "var(--brand-primary)" }}>{widget.icon}</span>
+                          <h3 className="text-[11px] sm:text-xs font-semibold uppercase tracking-wide truncate" style={{ color: "var(--brand-primary)" }}>{widget.title}</h3>
                         </div>
                         <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/50" />
                       </div>
                       {/* Preview content */}
-                      <div data-widget-content className="flex-1 px-3 pb-3 overflow-hidden text-foreground">
+                      <div data-widget-content className="flex-1 px-3 pb-3 overflow-hidden text-foreground min-h-0">
                         <Preview pixelSize={isFirst ? { width: 360, height: 120 } : { width: 160, height: 100 }} />
                       </div>
                     </div>

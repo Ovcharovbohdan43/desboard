@@ -34,6 +34,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { applyTheme, type Theme } from "@/lib/theme";
 import { toast } from "sonner";
@@ -196,6 +197,7 @@ export default function SettingsPage() {
     });
   };
 
+  const isMobile = useIsMobile();
   const avatarUrl = profile?.avatar_url ?? null;
   const initials = (profile?.display_name || fallbackDisplayName).slice(0, 2).toUpperCase();
 
@@ -237,39 +239,66 @@ export default function SettingsPage() {
 
   return (
     <div className="flex flex-col h-full min-h-0 overflow-hidden">
-      <header className="shrink-0 p-6 pb-4 border-b border-border/50">
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
+      <header className="shrink-0 px-4 py-4 md:px-6 md:pb-4 border-b border-border/50">
+        <h1 className="text-xl md:text-2xl font-bold">Settings</h1>
+        <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
           Manage your profile, team, and preferences
         </p>
+        {isMobile && (
+          <nav className="flex gap-1 mt-4 overflow-x-auto pb-0.5 -mx-1 scrollbar-hide">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setSearchParams({ tab: tab.id });
+                  }}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm whitespace-nowrap transition-colors shrink-0 min-h-[44px] touch-manipulation",
+                    activeTab === tab.id
+                      ? "bg-primary text-primary-foreground font-medium"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                >
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
+        )}
       </header>
 
-      <div className="flex flex-1 min-h-0 overflow-hidden">
-        <nav className="w-48 shrink-0 border-r border-border/50 p-4 flex flex-col gap-1">
-          {TABS.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  setSearchParams({ tab: tab.id });
-                }}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-colors",
-                  activeTab === tab.id
-                    ? "bg-primary text-primary-foreground font-medium"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                )}
-              >
-                <Icon className="w-4 h-4 shrink-0" />
-                {tab.label}
-              </button>
-            );
-          })}
-        </nav>
+      <div className="flex flex-1 min-h-0 overflow-hidden flex-col lg:flex-row">
+        {!isMobile && (
+          <nav className="w-48 shrink-0 border-r border-border/50 p-4 flex flex-col gap-1">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setSearchParams({ tab: tab.id });
+                  }}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-colors",
+                    activeTab === tab.id
+                      ? "bg-primary text-primary-foreground font-medium"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                >
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
+        )}
 
-        <main className="flex-1 min-w-0 overflow-y-auto p-6">
+        <main className="flex-1 min-w-0 overflow-y-auto p-4 md:p-6 pb-24 lg:pb-6 overscroll-contain">
           <AnimatePresence mode="wait">
             {activeTab === "profile" && (
               <motion.div
@@ -280,8 +309,8 @@ export default function SettingsPage() {
                 transition={{ duration: 0.15 }}
                 className="max-w-xl space-y-6"
               >
-                <div className="rounded-2xl border border-border/50 bg-card p-6 space-y-6">
-                  <h2 className="text-lg font-semibold">Profile</h2>
+                <div className="rounded-2xl border border-border/50 bg-card p-4 md:p-6 space-y-5 md:space-y-6">
+                  <h2 className="text-base md:text-lg font-semibold">Profile</h2>
 
                   {profileLoading ? (
                     <div className="flex items-center gap-3 text-muted-foreground">
@@ -290,9 +319,9 @@ export default function SettingsPage() {
                     </div>
                   ) : (
                     <>
-                      <div className="flex items-center gap-4">
-                        <div className="relative group">
-                          <Avatar className="h-20 w-20">
+                      <div className={cn("flex gap-4", isMobile && "flex-col sm:flex-row")}>
+                        <div className="relative group shrink-0">
+                          <Avatar className={cn("h-20 w-20", isMobile && "h-16 w-16")}>
                             <AvatarImage src={avatarUrl ?? undefined} alt="Avatar" />
                             <AvatarFallback className="text-lg">{initials}</AvatarFallback>
                           </Avatar>
@@ -307,7 +336,7 @@ export default function SettingsPage() {
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
                             disabled={avatarUploading}
-                            className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                            className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity cursor-pointer touch-manipulation"
                             aria-label="Change avatar"
                           >
                             {avatarUploading ? (
@@ -335,7 +364,7 @@ export default function SettingsPage() {
                             setDisplayName(e.target.value);
                           }}
                           placeholder="Your name"
-                          className="max-w-sm"
+                          className="w-full max-w-sm"
                         />
                       </div>
 
@@ -346,7 +375,7 @@ export default function SettingsPage() {
                           type="email"
                           value={email}
                           disabled
-                          className="max-w-sm bg-muted/50 cursor-not-allowed"
+                          className="w-full max-w-sm bg-muted/50 cursor-not-allowed"
                         />
                         <p className="text-xs text-muted-foreground">
                           Email cannot be changed here. Contact support if needed.
@@ -372,7 +401,7 @@ export default function SettingsPage() {
                   <div className="pt-6 mt-6 border-t border-border/50">
                     <Button
                       variant="outline"
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10 min-h-[44px] touch-manipulation"
                       onClick={async () => {
                         await signOut();
                         navigate("/login", { replace: true });
@@ -395,8 +424,8 @@ export default function SettingsPage() {
                 transition={{ duration: 0.15 }}
                 className="max-w-2xl space-y-6"
               >
-                <div className="rounded-2xl border border-border/50 bg-card p-6 space-y-6">
-                  <h2 className="text-lg font-semibold">Team</h2>
+                <div className="rounded-2xl border border-border/50 bg-card p-4 md:p-6 space-y-5 md:space-y-6">
+                  <h2 className="text-base md:text-lg font-semibold">Team</h2>
 
                   {!currentTeam ? (
                     <p className="text-sm text-muted-foreground">Select a team from the sidebar.</p>
@@ -405,11 +434,11 @@ export default function SettingsPage() {
                       <div className="space-y-2">
                         <Label>Team name</Label>
                         {teamNameEditing && canManageTeam ? (
-                          <div className="flex gap-2">
+                          <div className={cn("flex gap-2", isMobile && "flex-col")}>
                             <Input
                               value={teamNameEdit}
                               onChange={(e) => setTeamNameEdit(e.target.value)}
-                              className="max-w-xs"
+                              className={cn(isMobile ? "w-full" : "max-w-xs")}
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") handleSaveTeamName();
                                 if (e.key === "Escape") {
@@ -471,13 +500,13 @@ export default function SettingsPage() {
                               Invite by email
                             </Button>
                           ) : (
-                            <div className="space-y-2 p-4 rounded-xl bg-muted/30">
+                            <div className="space-y-2 p-3 md:p-4 rounded-xl bg-muted/30">
                               <Input
                                 placeholder="Email address"
                                 type="email"
                                 value={inviteEmail}
                                 onChange={(e) => setInviteEmail(e.target.value)}
-                                className="rounded-lg"
+                                className="rounded-lg w-full"
                               />
                               <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as "admin" | "member" | "guest")}>
                                 <SelectTrigger className="w-full rounded-lg">
@@ -489,7 +518,7 @@ export default function SettingsPage() {
                                   <SelectItem value="guest">Guest</SelectItem>
                                 </SelectContent>
                               </Select>
-                              <div className="flex gap-2">
+                              <div className={cn("flex gap-2", isMobile && "flex-col")}>
                                 <Button
                                   size="sm"
                                   onClick={handleInvite}
@@ -521,7 +550,10 @@ export default function SettingsPage() {
                                 {invites.map((inv) => (
                                   <div
                                     key={inv.id}
-                                    className="flex items-center justify-between gap-2 py-2 px-3 rounded-lg bg-muted/20"
+                                    className={cn(
+                                      "flex items-center justify-between gap-2 py-2 px-3 rounded-lg bg-muted/20",
+                                      isMobile && "flex-wrap"
+                                    )}
                                   >
                                     <span className="text-sm truncate">{inv.email}</span>
                                     <div className="flex items-center gap-1 shrink-0">
@@ -587,15 +619,19 @@ export default function SettingsPage() {
                               return (
                                 <div
                                   key={m.id}
-                                  className="flex items-center gap-3 p-3 rounded-xl bg-muted/40 border border-border/30"
+                                  className={cn(
+                                    "flex p-3 rounded-xl bg-muted/40 border border-border/30",
+                                    isMobile ? "flex-col gap-3" : "items-center gap-3"
+                                  )}
                                 >
-                                  <Avatar className="h-9 w-9 shrink-0">
-                                    <AvatarImage src={prof?.avatar_url ?? undefined} />
-                                    <AvatarFallback className="text-xs font-semibold">
-                                      {(displayName || "?").slice(0, 2).toUpperCase()}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                                    <Avatar className="h-9 w-9 shrink-0">
+                                      <AvatarImage src={prof?.avatar_url ?? undefined} />
+                                      <AvatarFallback className="text-xs font-semibold">
+                                        {(displayName || "?").slice(0, 2).toUpperCase()}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium truncate">
                                       {displayName}
                                       {isSelf && (
@@ -603,7 +639,9 @@ export default function SettingsPage() {
                                       )}
                                     </p>
                                     <p className="text-[10px] text-muted-foreground">{m.role}</p>
+                                    </div>
                                   </div>
+                                  <div className={cn("flex items-center gap-2", isMobile && "w-full justify-end")}>
                                   <Select
                                     value={m.role}
                                     onValueChange={(role) =>
@@ -614,7 +652,10 @@ export default function SettingsPage() {
                                     }
                                     disabled={!canChangeRole || m.role === "owner"}
                                   >
-                                    <SelectTrigger className="w-[100px] h-8 text-xs rounded-lg">
+                                    <SelectTrigger className={cn(
+                                      "h-9 text-xs rounded-lg min-h-[44px] touch-manipulation",
+                                      isMobile ? "w-full min-w-0 flex-1" : "w-[100px]"
+                                    )}>
                                       <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -694,7 +735,7 @@ export default function SettingsPage() {
                                     );
                                   }
                                 }}
-                                className="max-w-sm"
+                                className="w-full max-w-sm"
                               />
                             </div>
                             <p className="text-[11px] text-muted-foreground">
@@ -793,8 +834,8 @@ export default function SettingsPage() {
                 transition={{ duration: 0.15 }}
                 className="max-w-xl space-y-6"
               >
-                <div className="rounded-2xl border border-border/50 bg-card p-6 space-y-6">
-                  <h2 className="text-lg font-semibold">Preferences</h2>
+                <div className="rounded-2xl border border-border/50 bg-card p-4 md:p-6 space-y-5 md:space-y-6">
+                  <h2 className="text-base md:text-lg font-semibold">Preferences</h2>
 
                   {settingsLoading ? (
                     <div className="flex items-center gap-3 text-muted-foreground">
@@ -825,7 +866,7 @@ export default function SettingsPage() {
                                   );
                                 }}
                                 className={cn(
-                                  "flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-colors",
+                                  "flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-colors min-h-[44px] touch-manipulation",
                                   isActive
                                     ? "border-primary bg-primary/10 text-primary"
                                     : "border-border/50 hover:bg-muted/50"

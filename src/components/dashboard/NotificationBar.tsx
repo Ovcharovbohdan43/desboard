@@ -77,7 +77,7 @@ const NotificationBar = () => {
           className="w-full mb-3"
         >
           <div
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-card border border-border/30 cursor-pointer"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-card border border-border/30 cursor-pointer touch-manipulation active:scale-[0.99] transition-transform"
             onClick={() => navigate("/widget/calendar")}
           >
             <CalendarDays className="w-3.5 h-3.5 text-amber-500 shrink-0" />
@@ -96,9 +96,10 @@ const NotificationBar = () => {
                 e.stopPropagation();
                 setDismissed(true);
               }}
-              className="rounded p-0.5 shrink-0"
+              className="rounded p-2 -m-1.5 shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation"
+              aria-label="Dismiss"
             >
-              <X className="w-3 h-3 text-muted-foreground/40" />
+              <X className="w-3.5 h-3.5 text-muted-foreground/40" />
             </button>
           </div>
         </motion.div>
